@@ -1,7 +1,9 @@
 
-# connect_elasticsearch
+# connect_s3
 
-Forescout EyeExtend Connect app for Elastic
+Forescout EyeExtend Connect app for Amazon AWS S3
+
+This appl allows one to send host information from Forescout to an Amazon AWS S3 bucket
 
 ## Allow unsigned app install on Forescout
 
