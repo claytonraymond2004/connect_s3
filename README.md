@@ -56,6 +56,12 @@ An example specification follow:
 
 Above we've renamed the `in-group` property to `device_groups`, included a wildcarded inclusion of SCAP scan results, and some additional host properties. In the example above, the string that is matched via the `*` in the host data is used to replaced the `*` in the rename field naming (in this case, it is the name of the SCAP Benchmark content that is executed by Forescout).
 
+Additionally, you may override the API Base URL, Bucket, or Region defined in the app configuration. You may not override the Access key or Secret Key. If you override these values, the IAM user specified must have write access to the overriden bucket.
+
+Note: In any field on the action pane, if `null` is specified, the value will be ignored. In otherwords, use `null` to NOT override the Base URL, Bucket, or Region. `null` is used as the default value in these fields for convenience.
+
+When the action runs, the app will query the Forescout Web API for the host the action triggers on and process the results. If a selection of host fields is specified, it will limit the host fields sent and rename as requested. It will then take the result and put into the S3 bucket at the root of the bucket as the filename: `<host ip>.json`.
+
 Note that in the app package there is also a GUI based utility to help generate the string required in the host field list (if you do not wish to send all fields). The app allows you to connect to the Forescout API and pull the `/api/hostfields` and select which host fields you wish to select in the action and it will generate the string required for the action field. 
 
 To run this app make sure you have Node.JS and npm installed.
