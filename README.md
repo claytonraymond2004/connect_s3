@@ -23,7 +23,7 @@ This S3 app for Forescout EyeExtend Connect allows you to send data from Foresco
 - Create a credential the app (the EyeExtend App for S3) can use to call the Forescout Web API
 - Set the authentication token expiration time (or note the setting, needed during app configuration so EyeExtend Connect can refresh the Forescout API JWT)
 - Ensure that the connecting appliance running the app can access the Web API (`Client IPs` tab)
-3. Install the EyeExtend Connect Elasticsearch app
+3. Install the EyeExtend Connect S3 app
 4. Configure
 - S3 Connection
 	- Set an S3 API service endpoint address in the "S3 Base URL" field. This is the base of the S3 Bucket URL to call. It should be the REST API  endpoint address (as opposed to the s3-website dash/dot address). Examples include `https://s3.us-east-2.amazonaws.com/` or `https://s3-fips.us-gov-west-1.amazonaws.com/`. See the [AWS Service Endpoints documentation](https://docs.aws.amazon.com/general/latest/gr/rande.html) or [AWS GovCloud Service Endpints documentation](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/using-govcloud-endpoints.html) for more information.
