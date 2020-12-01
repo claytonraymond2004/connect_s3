@@ -29,6 +29,8 @@ This S3 app for Forescout EyeExtend Connect allows you to send data from Foresco
 	- Set an S3 API service endpoint address in the "S3 Base URL" field. This is the base of the S3 Bucket URL to call. It should be the REST API  endpoint address (as opposed to the s3-website dash/dot address). Examples include `https://s3.us-east-2.amazonaws.com/` or `https://s3-fips.us-gov-west-1.amazonaws.com/`. See the [AWS Service Endpoints documentation](https://docs.aws.amazon.com/general/latest/gr/rande.html) or [AWS GovCloud Service Endpints documentation](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/using-govcloud-endpoints.html) for more information.
 	- Set the AWS Region for what the S3 bucket resides in the "S3 Region" field. Examples include `us-east-2` or `us-gov-west-1`.
 	- Set the name of the AWS S3 bucket where data will be sent in the "S3 Bucket" field.
+	- Set the folder path where to store files in the "S3 Bucket Folder Path" field. Please include the beginning and trailing slash in this field. For example, set to "/" to store at the root of the bucket; set to "/forescout/" to put files in the "forescout" folder.
+	- Enable sending data in by date organized folders with the "S3 Bucket Dated Folder" checkbox. By enabling this feature, the current year, month, and day will be inserted after the folder path (above) but before the json file name. The (python) format is %Y/%m/%d. 
 	- Set the API Access Key ID in the "AWS API Access Key ID" field. This should be the ID of a IAM user with "Programmatic access" to the S3 bucket. It must have write permission to the bucket (it does not need read, list, or any other access).
 	- Set the API Access Secret Key in the "AWS API Secret Key" field for the user defined above.
 	- Verify the Secret Key in the "Verify AWS API Secret Key" field.
@@ -56,7 +58,7 @@ An example specification follow:
 
 Above we've renamed the `in-group` property to `device_groups`, included a wildcarded inclusion of SCAP scan results, and some additional host properties. In the example above, the string that is matched via the `*` in the host data is used to replaced the `*` in the rename field naming (in this case, it is the name of the SCAP Benchmark content that is executed by Forescout).
 
-Additionally, you may override the API Base URL, Bucket, or Region defined in the app configuration. You may not override the Access key or Secret Key. If you override these values, the IAM user specified must have write access to the overriden bucket.
+Additionally, you may override the API Base URL, Bucket, Folder path, or Region defined in the app configuration. You may not override the Access key or Secret Key. If you override these values, the IAM user specified must have write access to the overriden bucket.
 
 Note: In any field on the action pane, if `null` is specified, the value will be ignored. In otherwords, use `null` to NOT override the Base URL, Bucket, or Region. `null` is used as the default value in these fields for convenience.
 

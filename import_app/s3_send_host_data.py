@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from urllib import request
 from urllib.parse import quote_plus , urlparse
 import base64, datetime, hashlib, hmac, urllib
@@ -34,6 +35,10 @@ if params["connect_s3_send_host_data_baseurl_override"] != "null":
 s3_bucket = params["connect_s3_bucket"]
 if params["connect_s3_send_host_data_bucket_override"] != "null":
     s3_bucket = params["connect_s3_send_host_data_bucket_override"]
+s3_folder = params["connect_s3_folder"]
+if params["connect_s3_send_host_data_folder_override"] != "null":
+    s3_folder = params["connect_s3_send_host_data_folder_override"]
+s3_date = params["connect_s3_date"]
 s3_region = params["connect_s3_region"]
 if params["connect_s3_send_host_data_region_override"] != "null":
     s3_region = params["connect_s3_send_host_data_region_override"]
@@ -126,7 +131,24 @@ try:
         s3_host = urlparse(s3_baseUrl).netloc
         s3_algorithm = 'AWS4-HMAC-SHA256'
         s3_content_type = 'application/json'
-        s3_canonical_uri = '/%s/%s.json' % (s3_bucket, host_ip)
+        # Deal with folder prefix and date options
+        file_prefix = "/"
+        #
+        # Start by processing folder prefix specificiation
+        #
+        # Make sure starts with a forward slash
+        if s3_folder.startswith("/"):
+            file_prefix = s3_folder
+        else:
+            file_prefix = '/%s' % s3_folder
+        # Make sure has a trailing slash
+        if not s3_folder.endswith("/"):
+            file_prefix = '%s/' % file_prefix
+        # If date in path specified, add date path
+        if s3_date == "true":
+            file_prefix = '%s%s/' % (file_prefix, date.today().strftime("%Y/%m/%d"))
+        # Put together full path in canonical uri
+        s3_canonical_uri = '/%s%s%s.json' % (s3_bucket, file_prefix, host_ip)
         s3_request_url = "https://%s%s" % (s3_host, s3_canonical_uri)
         s3_canonical_querystring = ''
 
@@ -184,15 +206,11 @@ try:
             response["succeeded"] = True
             response["result_msg"] = "Host data successfully dropped in S3 Bucket"
         except urllib.error.HTTPError as e:
-            logging.error("Failed API Request to AWS S3!")
-            logging.error("HTTP ERROR %s" % e.code)
-            logging.error(e.read())
+            logging.exception("Exeception (urllib.error.HTTPError): Failed API Request to AWS S3!")
             response["succeeded"] = False
             response["result_msg"] = "Failed API Request to AWS S3! (HTTP Error)"
         except Exception as e:
-            logging.error("Failed API Request to AWS S3!")
-            logging.debug(e.code)
-            logging.debug(e.read())
+            logging.exception("Exception (General urllib.request.urlopen Exception): Failed API Request to AWS S3!")
             response["succeeded"] = False
             response["result_msg"] = "Failed API Request to AWS S3! (General Exception)"
     else:
@@ -200,6 +218,6 @@ try:
         response["succeeded"] = False
         response["result_msg"] = "Failed API request to Forescout Web API server!"
 except Exception as e:
-    logging.error("Exception: {}".format(e))
+    logging.error("General Block Exception: {}".format(e))
     response["succeeded"] = False
     response["result_msg"] = "Exception! Something went wrong! Couldn't talk to Forescout, action parsing failed, or message to Elastic failed. See the debug logs for more info."
